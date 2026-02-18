@@ -1,3 +1,3 @@
-export { login, signUp, logout, onAuthChange } from './authOperations';
-export { validateCredentials } from './authValidation';
-export { getAuthErrorMessage } from './authErrors';
+export { getAuthErrorMessage } from "./authErrors";
+export { login, logout, onAuthChange, signUp } from "./authOperations";
+export { validateCredentials } from "./authValidation";

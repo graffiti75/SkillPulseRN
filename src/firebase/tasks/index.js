@@ -1,11 +1,11 @@
-export { ITEMS_LIMIT } from './constants';
-export { loadTasks } from './taskQueries';
-export { addTask, updateTask, deleteTask } from './taskOperations';
-export { extractSuggestions } from './taskSuggestions';
+export { ITEMS_LIMIT } from "./constants";
 export {
-	downloadTasksByMonth,
-	downloadTasksByMonthAsJSON,
-	downloadTasksByMonthAsCSV,
-	downloadCurrentMonthTasksAsJSON,
-	downloadCurrentMonthTasksAsCSV,
-} from './taskDownload';
+    downloadCurrentMonthTasksAsCSV,
+    downloadCurrentMonthTasksAsJSON,
+    downloadTasksByMonth,
+    downloadTasksByMonthAsCSV,
+    downloadTasksByMonthAsJSON,
+} from "./taskDownload";
+export { addTask, deleteTask, updateTask } from "./taskOperations";
+export { loadTasks } from "./taskQueries";
+export { extractSuggestions } from "./taskSuggestions";

@@ -17,8 +17,6 @@
       },
       "edgeToEdgeEnabled": true
     },
-    "plugins": [
-      "expo-splash-screen"
-    ]
+    "plugins": ["expo-splash-screen"]
   }
 }

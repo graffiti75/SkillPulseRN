@@ -1,3 +1,3 @@
-export { auth, db } from './config';
-export * from './auth';
-export * from './tasks';
+export * from "./auth";
+export { auth, db } from "./config";
+export * from "./tasks";

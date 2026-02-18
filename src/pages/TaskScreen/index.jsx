@@ -1,21 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import {
-  View, FlatList, Text, TouchableOpacity, StyleSheet,
-  ActivityIndicator, RefreshControl,
-} from 'react-native';
-import { FAB, Header, FilterBar } from '../../components/layout';
-import { TaskCard, EmptyState, TaskForm, DeleteConfirmation } from '../../components/tasks';
-import { Alert } from '../../components/common';
-import { useUIControls } from './useUIControls';
-import { useTaskManager } from './useTaskManager';
-import { createTaskHandlers } from './taskHandlers';
-import DownloadScreen from '../DownloadScreen';
-import { useTheme } from '../../contexts/ThemeContext';
-import { colors } from '../../theme';
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { Alert } from "../../components/common";
+import { FAB, FilterBar, Header } from "../../components/layout";
+import {
+  DeleteConfirmation,
+  EmptyState,
+  TaskCard,
+  TaskForm,
+} from "../../components/tasks";
+import { useTheme } from "../../contexts/ThemeContext";
+import { colors } from "../../theme";
+import DownloadScreen from "../DownloadScreen";
+import { createTaskHandlers } from "./taskHandlers";
+import { useTaskManager } from "./useTaskManager";
+import { useUIControls } from "./useUIControls";
 
 const TaskScreen = ({ user, onLogout }) => {
   const { isDarkMode } = useTheme();
-  const c = colors[isDarkMode ? 'dark' : 'light'];
+  const c = colors[isDarkMode ? "dark" : "light"];
   const uiControls = useUIControls();
   const taskManager = useTaskManager();
   const handlers = createTaskHandlers(uiControls, taskManager);
@@ -23,7 +32,8 @@ const TaskScreen = ({ user, onLogout }) => {
 
   useEffect(() => {
     uiControls.fetchTasks().then((result) => {
-      if (result && !result.success) taskManager.showAlert(result.error, 'error');
+      if (result && !result.success)
+        taskManager.showAlert(result.error, "error");
     });
   }, []);
 
@@ -46,15 +56,28 @@ const TaskScreen = ({ user, onLogout }) => {
     if (uiControls.canLoadMore && !uiControls.filterDate) {
       return (
         <TouchableOpacity
-          style={[styles.loadMoreBtn, { backgroundColor: c.primaryLight, borderColor: c.primary }]}
+          style={[
+            styles.loadMoreBtn,
+            { backgroundColor: c.primaryLight, borderColor: c.primary },
+          ]}
           onPress={handlers.handleLoadMore}
         >
-          <Text style={[styles.loadMoreText, { color: c.primary }]}>Load More</Text>
+          <Text style={[styles.loadMoreText, { color: c.primary }]}>
+            Load More
+          </Text>
         </TouchableOpacity>
       );
     }
-    if (!uiControls.canLoadMore && uiControls.tasks.length > 0 && !uiControls.filterDate) {
-      return <Text style={[styles.endText, { color: c.textMuted }]}>No more tasks</Text>;
+    if (
+      !uiControls.canLoadMore &&
+      uiControls.tasks.length > 0 &&
+      !uiControls.filterDate
+    ) {
+      return (
+        <Text style={[styles.endText, { color: c.textMuted }]}>
+          No more tasks
+        </Text>
+      );
     }
     return null;
   };
@@ -63,7 +86,7 @@ const TaskScreen = ({ user, onLogout }) => {
     <View style={[styles.container, { backgroundColor: c.background }]}>
       {/* Header */}
       <Header
-        user={user?.email?.split('@')[0] || 'User'}
+        user={user?.email?.split("@")[0] || "User"}
         taskCount={uiControls.allTasks.length}
         filteredCount={uiControls.tasks.length}
         showFilter={taskManager.showFilter}
@@ -77,7 +100,7 @@ const TaskScreen = ({ user, onLogout }) => {
         <FilterBar
           filterDate={uiControls.filterDate}
           onFilterChange={uiControls.filterByDate}
-          onClear={() => uiControls.filterByDate('')}
+          onClear={() => uiControls.filterByDate("")}
           onToggleFilter={taskManager.toggleFilter}
         />
       )}
@@ -86,7 +109,9 @@ const TaskScreen = ({ user, onLogout }) => {
       {uiControls.isLoading ? (
         <View style={styles.loadingCenter}>
           <ActivityIndicator size="large" color={c.primary} />
-          <Text style={[styles.loadingText, { color: c.textSecondary }]}>Loading tasks...</Text>
+          <Text style={[styles.loadingText, { color: c.textSecondary }]}>
+            Loading tasks...
+          </Text>
         </View>
       ) : (
         <FlatList
@@ -127,7 +152,10 @@ const TaskScreen = ({ user, onLogout }) => {
         onConfirm={handlers.handleDeleteTask}
         taskDescription={taskManager.deleteTaskData?.description}
       />
-      <DownloadScreen isOpen={showDownload} onClose={() => setShowDownload(false)} />
+      <DownloadScreen
+        isOpen={showDownload}
+        onClose={() => setShowDownload(false)}
+      />
 
       {taskManager.alert && (
         <Alert
@@ -144,15 +172,23 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   list: { padding: 12, paddingBottom: 100 },
   listEmpty: { flexGrow: 1 },
-  loadingCenter: { flex: 1, justifyContent: 'center', alignItems: 'center', gap: 12 },
-  loadingText: { fontSize: 14 },
-  footerSpinner: { padding: 20, alignItems: 'center' },
-  loadMoreBtn: {
-    margin: 16, paddingVertical: 14, borderRadius: 12,
-    alignItems: 'center', borderWidth: 1,
+  loadingCenter: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 12,
   },
-  loadMoreText: { fontWeight: '600', fontSize: 14 },
-  endText: { textAlign: 'center', padding: 20, fontSize: 13 },
+  loadingText: { fontSize: 14 },
+  footerSpinner: { padding: 20, alignItems: "center" },
+  loadMoreBtn: {
+    margin: 16,
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: "center",
+    borderWidth: 1,
+  },
+  loadMoreText: { fontWeight: "600", fontSize: 14 },
+  endText: { textAlign: "center", padding: 20, fontSize: 13 },
 });
 
 export default TaskScreen;

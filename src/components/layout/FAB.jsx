@@ -1,12 +1,11 @@
-import React from 'react';
-import { TouchableOpacity, StyleSheet } from 'react-native';
-import { Icons } from '../common/Icons';
-import { useTheme } from '../../contexts/ThemeContext';
-import { colors } from '../../theme';
+import { StyleSheet, TouchableOpacity } from "react-native";
+import { useTheme } from "../../contexts/ThemeContext";
+import { colors } from "../../theme";
+import { Icons } from "../common/Icons";
 
 const FAB = ({ onClick }) => {
   const { isDarkMode } = useTheme();
-  const c = colors[isDarkMode ? 'dark' : 'light'];
+  const c = colors[isDarkMode ? "dark" : "light"];
   return (
     <TouchableOpacity
       style={[styles.fab, { backgroundColor: c.primary }]}
@@ -20,15 +19,15 @@ const FAB = ({ onClick }) => {
 
 const styles = StyleSheet.create({
   fab: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 24,
     right: 20,
     width: 56,
     height: 56,
     borderRadius: 28,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 8,

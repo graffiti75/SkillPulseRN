@@ -1,8 +1,16 @@
-import { collection, getDocs, query, orderBy, limit, startAfter, where } from 'firebase/firestore';
-import { db } from '../config';
-import { TASKS_COLLECTION, ITEMS_LIMIT } from './constants';
-import { mapDocumentToTask } from './taskMapper';
-import { getFirestoreErrorMessage } from './errorHandler';
+import {
+    collection,
+    getDocs,
+    limit,
+    orderBy,
+    query,
+    startAfter,
+    where,
+} from "firebase/firestore";
+import { db } from "../config";
+import { ITEMS_LIMIT, TASKS_COLLECTION } from "./constants";
+import { getFirestoreErrorMessage } from "./errorHandler";
+import { mapDocumentToTask } from "./taskMapper";
 
 /**
  * Get the start and end dates for a given month
@@ -11,12 +19,12 @@ import { getFirestoreErrorMessage } from './errorHandler';
  * @returns {{ startDate: string, endDate: string }} ISO date strings for the month range
  */
 const getMonthDateRange = (year, month) => {
-	const startDate = new Date(year, month - 1, 1);
-	const endDate = new Date(year, month, 0, 23, 59, 59, 999);
-	return {
-		startDate: startDate.toISOString(),
-		endDate: endDate.toISOString(),
-	};
+    const startDate = new Date(year, month - 1, 1);
+    const endDate = new Date(year, month, 0, 23, 59, 59, 999);
+    return {
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+    };
 };
 
 /**
@@ -26,39 +34,39 @@ const getMonthDateRange = (year, month) => {
  * @returns {Promise<{ success: boolean, tasks?: Array, lastId?: string, canLoadMore?: boolean, error?: string }>}
  */
 export const loadTasks = async (userEmail, lastId = null) => {
-	try {
-		if (!userEmail) {
-			return {
-				success: false,
-				error: 'User email is required',
-			};
-		}
+    try {
+        if (!userEmail) {
+            return {
+                success: false,
+                error: "User email is required",
+            };
+        }
 
-		const q = query(
-			collection(db, TASKS_COLLECTION),
-			where('userId', '==', userEmail),
-			orderBy('id', 'desc'),
-			...(lastId ? [startAfter(lastId)] : []),
-			limit(ITEMS_LIMIT)
-		);
+        const q = query(
+            collection(db, TASKS_COLLECTION),
+            where("userId", "==", userEmail),
+            orderBy("id", "desc"),
+            ...(lastId ? [startAfter(lastId)] : []),
+            limit(ITEMS_LIMIT),
+        );
 
-		const snapshot = await getDocs(q);
-		const tasks = snapshot.docs.map(mapDocumentToTask).filter(Boolean);
-		const newLastId = tasks.length > 0 ? tasks[tasks.length - 1].id : null;
+        const snapshot = await getDocs(q);
+        const tasks = snapshot.docs.map(mapDocumentToTask).filter(Boolean);
+        const newLastId = tasks.length > 0 ? tasks[tasks.length - 1].id : null;
 
-		return {
-			success: true,
-			tasks,
-			lastId: newLastId,
-			canLoadMore: tasks.length === ITEMS_LIMIT,
-		};
-	} catch (error) {
-		console.error('Error loading tasks:', error);
-		return {
-			success: false,
-			error: getFirestoreErrorMessage(error),
-		};
-	}
+        return {
+            success: true,
+            tasks,
+            lastId: newLastId,
+            canLoadMore: tasks.length === ITEMS_LIMIT,
+        };
+    } catch (error) {
+        console.error("Error loading tasks:", error);
+        return {
+            success: false,
+            error: getFirestoreErrorMessage(error),
+        };
+    }
 };
 
 /**
@@ -69,52 +77,52 @@ export const loadTasks = async (userEmail, lastId = null) => {
  * @returns {Promise<{ success: boolean, tasks?: Array, error?: string, totalCount?: number }>}
  */
 export const loadTasksByMonth = async (userEmail, year, month) => {
-	console.log('QUERY:', { userEmail, year, month, monthType: typeof month });
+    console.log("QUERY:", { userEmail, year, month, monthType: typeof month });
 
-	try {
-		if (!userEmail) {
-			return {
-				success: false,
-				error: 'User email is required',
-			};
-		}
+    try {
+        if (!userEmail) {
+            return {
+                success: false,
+                error: "User email is required",
+            };
+        }
 
-		// Validate inputs
-		if (!year || !month || month < 1 || month > 12) {
-			return {
-				success: false,
-				error: 'Invalid year or month. Month should be between 1 and 12.',
-			};
-		}
+        // Validate inputs
+        if (!year || !month || month < 1 || month > 12) {
+            return {
+                success: false,
+                error: "Invalid year or month. Month should be between 1 and 12.",
+            };
+        }
 
-		const { startDate, endDate } = getMonthDateRange(year, month);
+        const { startDate, endDate } = getMonthDateRange(year, month);
 
-		// Query tasks where startTime falls within the month range
-		const q = query(
-			collection(db, TASKS_COLLECTION),
-			where('userId', '==', userEmail),
-			where('startTime', '>=', startDate),
-			where('startTime', '<=', endDate),
-			orderBy('startTime', 'asc')
-		);
+        // Query tasks where startTime falls within the month range
+        const q = query(
+            collection(db, TASKS_COLLECTION),
+            where("userId", "==", userEmail),
+            where("startTime", ">=", startDate),
+            where("startTime", "<=", endDate),
+            orderBy("startTime", "asc"),
+        );
 
-		const snapshot = await getDocs(q);
-		const tasks = snapshot.docs.map(mapDocumentToTask).filter(Boolean);
+        const snapshot = await getDocs(q);
+        const tasks = snapshot.docs.map(mapDocumentToTask).filter(Boolean);
 
-		return {
-			success: true,
-			tasks,
-			totalCount: tasks.length,
-			month,
-			year,
-		};
-	} catch (error) {
-		console.error('Error loading tasks by month:', error);
-		return {
-			success: false,
-			error: getFirestoreErrorMessage(error),
-		};
-	}
+        return {
+            success: true,
+            tasks,
+            totalCount: tasks.length,
+            month,
+            year,
+        };
+    } catch (error) {
+        console.error("Error loading tasks by month:", error);
+        return {
+            success: false,
+            error: getFirestoreErrorMessage(error),
+        };
+    }
 };
 
 /**
@@ -123,6 +131,6 @@ export const loadTasksByMonth = async (userEmail, year, month) => {
  * @returns {Promise<{ success: boolean, tasks?: Array, error?: string, totalCount?: number }>}
  */
 export const loadTasksCurrentMonth = async (userEmail) => {
-	const now = new Date();
-	return loadTasksByMonth(userEmail, now.getFullYear(), now.getMonth() + 1);
+    const now = new Date();
+    return loadTasksByMonth(userEmail, now.getFullYear(), now.getMonth() + 1);
 };

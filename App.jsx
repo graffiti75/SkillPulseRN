@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import LoginScreen from './src/components/auth/LoginScreen';
-import TaskScreen from './src/pages/TaskScreen';
-import Loading from './src/components/common/Loading';
-import Alert from './src/components/common/Alert';
-import { AuthProvider } from './src/contexts/AuthContext';
-import { MenuProvider } from './src/contexts/MenuContext';
-import { ThemeProvider, useTheme } from './src/contexts/ThemeContext';
-import { onAuthChange, logout } from './src/firebase';
-import { colors } from './src/theme';
+import { StatusBar } from "expo-status-bar";
+import { useEffect, useState } from "react";
+import { StyleSheet, View } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import LoginScreen from "./src/components/auth/LoginScreen";
+import Alert from "./src/components/common/Alert";
+import Loading from "./src/components/common/Loading";
+import { AuthProvider } from "./src/contexts/AuthContext";
+import { MenuProvider } from "./src/contexts/MenuContext";
+import { ThemeProvider, useTheme } from "./src/contexts/ThemeContext";
+import { logout, onAuthChange } from "./src/firebase";
+import TaskScreen from "./src/pages/TaskScreen";
+import { colors } from "./src/theme";
 
 function AppContent() {
   const { isDarkMode } = useTheme();
-  const c = colors[isDarkMode ? 'dark' : 'light'];
+  const c = colors[isDarkMode ? "dark" : "light"];
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [alert, setAlert] = useState(null);
@@ -29,14 +29,14 @@ function AppContent() {
 
   const handleLoginSuccess = (firebaseUser) => {
     setUser(firebaseUser);
-    setAlert({ message: 'Welcome back!', type: 'success' });
+    setAlert({ message: "Welcome back!", type: "success" });
   };
 
   const handleLogout = async () => {
     const result = await logout();
     if (result.success) {
       setUser(null);
-      setAlert({ message: 'Logged out successfully', type: 'success' });
+      setAlert({ message: "Logged out successfully", type: "success" });
     }
   };
 
@@ -52,7 +52,7 @@ function AppContent() {
     <AuthProvider user={user} isLoading={isLoading}>
       <MenuProvider>
         <View style={[styles.container, { backgroundColor: c.background }]}>
-          <StatusBar style={isDarkMode ? 'light' : 'dark'} />
+          <StatusBar style={isDarkMode ? "light" : "dark"} />
           {user ? (
             <TaskScreen user={user} onLogout={handleLogout} />
           ) : (
@@ -83,5 +83,5 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  loadingScreen: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  loadingScreen: { flex: 1, justifyContent: "center", alignItems: "center" },
 });

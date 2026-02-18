@@ -1,17 +1,17 @@
 import {
-	collection,
-	doc,
-	getDocs,
-	setDoc,
-	updateDoc,
-	deleteDoc,
-	query,
-	where,
-} from 'firebase/firestore';
-import { db } from '../config';
-import { TASKS_COLLECTION } from './constants';
-import { generateTaskId } from './taskIdGenerator';
-import { getFirestoreErrorMessage } from './errorHandler';
+    collection,
+    deleteDoc,
+    doc,
+    getDocs,
+    query,
+    setDoc,
+    updateDoc,
+    where,
+} from "firebase/firestore";
+import { db } from "../config";
+import { TASKS_COLLECTION } from "./constants";
+import { getFirestoreErrorMessage } from "./errorHandler";
+import { generateTaskId } from "./taskIdGenerator";
 
 /**
  * Find task document by ID and user
@@ -20,18 +20,18 @@ import { getFirestoreErrorMessage } from './errorHandler';
  * @returns {Promise<string|null>} The Firestore document ID or null if not found
  */
 const findTaskDoc = async (taskId, userEmail) => {
-	if (!userEmail) {
-		throw new Error('User email is required');
-	}
+    if (!userEmail) {
+        throw new Error("User email is required");
+    }
 
-	const snapshot = await getDocs(
-		query(
-			collection(db, TASKS_COLLECTION),
-			where('id', '==', taskId),
-			where('userId', '==', userEmail)
-		)
-	);
-	return snapshot.empty ? null : snapshot.docs[0].id;
+    const snapshot = await getDocs(
+        query(
+            collection(db, TASKS_COLLECTION),
+            where("id", "==", taskId),
+            where("userId", "==", userEmail),
+        ),
+    );
+    return snapshot.empty ? null : snapshot.docs[0].id;
 };
 
 /**
@@ -43,26 +43,26 @@ const findTaskDoc = async (taskId, userEmail) => {
  * @returns {Promise<{ success: boolean, task?: Object, error?: string }>}
  */
 export const addTask = async (userEmail, description, startTime, endTime) => {
-	try {
-		if (!userEmail) {
-			return { success: false, error: 'User email is required' };
-		}
+    try {
+        if (!userEmail) {
+            return { success: false, error: "User email is required" };
+        }
 
-		const taskId = await generateTaskId(startTime);
-		const task = {
-			id: taskId,
-			userId: userEmail,
-			description,
-			timestamp: new Date().toISOString(),
-			startTime,
-			endTime,
-		};
-		await setDoc(doc(db, TASKS_COLLECTION, taskId), task);
-		return { success: true, task };
-	} catch (error) {
-		console.error('Error adding task:', error);
-		return { success: false, error: getFirestoreErrorMessage(error) };
-	}
+        const taskId = await generateTaskId(startTime);
+        const task = {
+            id: taskId,
+            userId: userEmail,
+            description,
+            timestamp: new Date().toISOString(),
+            startTime,
+            endTime,
+        };
+        await setDoc(doc(db, TASKS_COLLECTION, taskId), task);
+        return { success: true, task };
+    } catch (error) {
+        console.error("Error adding task:", error);
+        return { success: false, error: getFirestoreErrorMessage(error) };
+    }
 };
 
 /**
@@ -74,24 +74,30 @@ export const addTask = async (userEmail, description, startTime, endTime) => {
  * @param {string} endTime - Updated end time
  * @returns {Promise<{ success: boolean, error?: string }>}
  */
-export const updateTask = async (userEmail, taskId, description, startTime, endTime) => {
-	try {
-		if (!userEmail) {
-			return { success: false, error: 'User email is required' };
-		}
+export const updateTask = async (
+    userEmail,
+    taskId,
+    description,
+    startTime,
+    endTime,
+) => {
+    try {
+        if (!userEmail) {
+            return { success: false, error: "User email is required" };
+        }
 
-		const documentId = await findTaskDoc(taskId, userEmail);
-		if (!documentId) return { success: false, error: 'Task not found' };
-		await updateDoc(doc(db, TASKS_COLLECTION, documentId), {
-			description,
-			startTime,
-			endTime,
-		});
-		return { success: true };
-	} catch (error) {
-		console.error('Error updating task:', error);
-		return { success: false, error: getFirestoreErrorMessage(error) };
-	}
+        const documentId = await findTaskDoc(taskId, userEmail);
+        if (!documentId) return { success: false, error: "Task not found" };
+        await updateDoc(doc(db, TASKS_COLLECTION, documentId), {
+            description,
+            startTime,
+            endTime,
+        });
+        return { success: true };
+    } catch (error) {
+        console.error("Error updating task:", error);
+        return { success: false, error: getFirestoreErrorMessage(error) };
+    }
 };
 
 /**
@@ -101,18 +107,18 @@ export const updateTask = async (userEmail, taskId, description, startTime, endT
  * @returns {Promise<{ success: boolean, error?: string }>}
  */
 export const deleteTask = async (userEmail, taskId) => {
-	try {
-		if (!userEmail) {
-			return { success: false, error: 'User email is required' };
-		}
+    try {
+        if (!userEmail) {
+            return { success: false, error: "User email is required" };
+        }
 
-		const documentId = await findTaskDoc(taskId, userEmail);
-		if (!documentId) return { success: false, error: 'Task not found' };
+        const documentId = await findTaskDoc(taskId, userEmail);
+        if (!documentId) return { success: false, error: "Task not found" };
 
-		await deleteDoc(doc(db, TASKS_COLLECTION, documentId));
-		return { success: true };
-	} catch (error) {
-		console.error('Error deleting task:', error);
-		return { success: false, error: getFirestoreErrorMessage(error) };
-	}
+        await deleteDoc(doc(db, TASKS_COLLECTION, documentId));
+        return { success: true };
+    } catch (error) {
+        console.error("Error deleting task:", error);
+        return { success: false, error: getFirestoreErrorMessage(error) };
+    }
 };
