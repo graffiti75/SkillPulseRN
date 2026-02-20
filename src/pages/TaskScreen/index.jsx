@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
+  RefreshControl,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -29,6 +30,7 @@ const TaskScreen = ({ user, onLogout }) => {
   const taskManager = useTaskManager();
   const handlers = createTaskHandlers(uiControls, taskManager);
   const [showDownload, setShowDownload] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     uiControls.fetchTasks().then((result) => {
@@ -36,6 +38,12 @@ const TaskScreen = ({ user, onLogout }) => {
         taskManager.showAlert(result.error, "error");
     });
   }, []);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await uiControls.fetchTasks();
+    setRefreshing(false);
+  };
 
   const renderItem = ({ item }) => (
     <TaskCard
@@ -125,6 +133,14 @@ const TaskScreen = ({ user, onLogout }) => {
           ListEmptyComponent={<EmptyState />}
           ListFooterComponent={renderFooter}
           showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[c.primary]}
+              tintColor={c.primary}
+            />
+          }
         />
       )}
 
