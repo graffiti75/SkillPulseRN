@@ -136,7 +136,7 @@ const LoginScreen = ({ onLoginSuccess }) => {
               {isLoading ? (
                 <ActivityIndicator color="#fff" size="small" />
               ) : (
-                <Text style={s.btnPrimaryText}>Log In Aaaaa</Text>
+                <Text style={s.btnPrimaryText}>Log In</Text>
               )}
             </TouchableOpacity>
             <TouchableOpacity

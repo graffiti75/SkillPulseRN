@@ -1,4 +1,5 @@
-import { Platform, StatusBar, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "../../contexts/ThemeContext";
 import { colors } from "../../theme";
 import Menu from "./Menu";
@@ -14,11 +15,16 @@ const Header = ({
 }) => {
   const { isDarkMode } = useTheme();
   const c = colors[isDarkMode ? "dark" : "light"];
+  const insets = useSafeAreaInsets();
   return (
     <View
       style={[
         styles.header,
-        { backgroundColor: c.surface, borderBottomColor: c.border },
+        {
+          backgroundColor: c.surface,
+          borderBottomColor: c.border,
+          paddingTop: insets.top,
+        },
       ]}
     >
       <View style={styles.inner}>
@@ -45,7 +51,6 @@ const Header = ({
 const styles = StyleSheet.create({
   header: {
     borderBottomWidth: 1,
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     elevation: 2,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
